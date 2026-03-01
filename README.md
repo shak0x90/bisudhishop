@@ -10,8 +10,11 @@ We've made several core improvements to customize the base platform into a fully
 
 ### 1. Storefront Improvements (Next.js)
 - **Category Routing Fixed**: Resolved 404 navigation errors by mapping subcategories properly under the `/categories/` routing system, removing hardcoded `/store/` links.
+- **Order Tracking Reliability**: Updated the Tracking Page to parse the correct `fulfillments.labels` API array instead of dropping tracking numbers, ensuring customers can consistently track packages.
+- **Mobile UI & Aspect Ratios**: Switched all product grids and thumbnail cards to `aspect-square` `object-contain` for consistent catalog visuals without cropping, and optimized mobile padding/gaps for better native app feel.
+- **Social Commerce Integrations**: Added direct "WhatsApp" and "Messenger" floating chat buttons and Product Detail Page action buttons to facilitate conversational orders. 
+- **Bengali Localization (Phase 1)**: Integrated a cookie-based `IntlProvider` and JSON Dictionaries. Users can now toggle between English and Bengali using the header dropdown, which translates Core Navigation, the Shopping Cart, Checkout Actions, and Product Descriptions natively.
 - **Edge Runtime Networking Fix**: Fixed `TypeError: fetch failed` during frontend middleware executions (`getRegionMap`) by properly routing internal requests to IPv4 (`127.0.0.1:9000`) instead of hitting IPv6 constraints.
-- **UI Enhancements**: Ensured all category-related images and dynamic paths render securely and responsively.
 
 ### 2. Backend & Data Seeding (Medusa JS)
 - **Market Customization**: Fully configured the default region for **Bangladesh** with **BDT (Bangladeshi Taka)** as the default currency.

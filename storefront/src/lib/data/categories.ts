@@ -27,7 +27,7 @@ export const listCategories = async (query?: Record<string, any>) => {
 }
 
 export const getCategoryByHandle = async (categoryHandle: string[]) => {
-  const handle = `${categoryHandle.join("/")}`
+  const handle = decodeURIComponent(categoryHandle.join("/"));
 
   const next = {
     ...(await getCacheOptions("categories")),
@@ -39,7 +39,7 @@ export const getCategoryByHandle = async (categoryHandle: string[]) => {
       {
         query: {
           fields: "*category_children, *products",
-          handle,
+          handle: [handle],
         },
         next,
         cache: "force-cache",

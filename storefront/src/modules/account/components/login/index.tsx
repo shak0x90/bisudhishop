@@ -7,9 +7,10 @@ import { useActionState } from "react"
 
 type Props = {
   setCurrentView: (view: LOGIN_VIEW) => void
+  redirectUrl?: string | null
 }
 
-const Login = ({ setCurrentView }: Props) => {
+const Login = ({ setCurrentView, redirectUrl }: Props) => {
   const [message, formAction] = useActionState(login, null)
 
   return (
@@ -22,6 +23,9 @@ const Login = ({ setCurrentView }: Props) => {
         Sign in to access an enhanced shopping experience.
       </p>
       <form className="w-full" action={formAction}>
+        {redirectUrl && (
+          <input type="hidden" name="redirect_url" value={redirectUrl} />
+        )}
         <div className="flex flex-col w-full gap-y-2">
           <Input
             label="Email"

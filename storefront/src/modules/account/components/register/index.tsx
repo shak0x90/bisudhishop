@@ -10,9 +10,10 @@ import { signup } from "@lib/data/customer"
 
 type Props = {
   setCurrentView: (view: LOGIN_VIEW) => void
+  redirectUrl?: string | null
 }
 
-const Register = ({ setCurrentView }: Props) => {
+const Register = ({ setCurrentView, redirectUrl }: Props) => {
   const [message, formAction] = useActionState(signup, null)
 
   return (
@@ -28,6 +29,9 @@ const Register = ({ setCurrentView }: Props) => {
         shopping experience.
       </p>
       <form className="w-full flex flex-col" action={formAction}>
+        {redirectUrl && (
+          <input type="hidden" name="redirect_url" value={redirectUrl} />
+        )}
         <div className="flex flex-col w-full gap-y-2">
           <Input
             label="First name"

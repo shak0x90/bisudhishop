@@ -7,6 +7,7 @@ import { Button } from "@medusajs/ui"
 import { useElements, useStripe } from "@stripe/react-stripe-js"
 import React, { useState } from "react"
 import ErrorMessage from "../error-message"
+import { useTranslation } from "@lib/providers/intl-provider"
 
 type PaymentButtonProps = {
   cart: HttpTypes.StoreCart
@@ -53,6 +54,7 @@ const StripePaymentButton = ({
   notReady: boolean
   "data-testid"?: string
 }) => {
+  const { t } = useTranslation()
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
@@ -141,7 +143,7 @@ const StripePaymentButton = ({
         isLoading={submitting}
         data-testid={dataTestId}
       >
-        Place order
+        {t("checkout.placeOrder")}
       </Button>
       <ErrorMessage
         error={errorMessage}
@@ -152,6 +154,7 @@ const StripePaymentButton = ({
 }
 
 const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
+  const { t } = useTranslation()
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
@@ -180,7 +183,7 @@ const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
         size="large"
         data-testid="submit-order-button"
       >
-        Place order
+        {t("checkout.placeOrder")}
       </Button>
       <ErrorMessage
         error={errorMessage}

@@ -6,19 +6,22 @@ import Refresh from "@modules/common/icons/refresh"
 
 import Accordion from "./accordion"
 import { HttpTypes } from "@medusajs/types"
+import { useTranslation } from "@lib/providers/intl-provider"
 
 type ProductTabsProps = {
   product: HttpTypes.StoreProduct
 }
 
 const ProductTabs = ({ product }: ProductTabsProps) => {
+  const { t } = useTranslation()
+
   const tabs = [
     {
-      label: "Product Information",
+      label: t("product.productInformation"),
       component: <ProductInfoTab product={product} />,
     },
     {
-      label: "Shipping & Returns",
+      label: t("product.shipping"),
       component: <ShippingInfoTab />,
     },
   ]
@@ -44,6 +47,13 @@ const ProductTabs = ({ product }: ProductTabsProps) => {
 const ProductInfoTab = ({ product }: ProductTabsProps) => {
   return (
     <div className="text-small-regular py-8">
+      {/* Real product description rendering area added */}
+      {product.description && (
+        <div className="mb-6 flex flex-col gap-2">
+          <p className="text-gray-700 leading-relaxed font-nunito">{product.description}</p>
+        </div>
+      )}
+
       <div className="grid grid-cols-2 gap-x-8">
         <div className="flex flex-col gap-y-4">
           <div>
@@ -79,37 +89,35 @@ const ProductInfoTab = ({ product }: ProductTabsProps) => {
 }
 
 const ShippingInfoTab = () => {
+  const { t } = useTranslation()
+
   return (
     <div className="text-small-regular py-8">
       <div className="grid grid-cols-1 gap-y-8">
         <div className="flex items-start gap-x-2">
           <FastDelivery />
           <div>
-            <span className="font-semibold">Fast delivery</span>
+            <span className="font-semibold">{t("product.fastDelivery")}</span>
             <p className="max-w-sm">
-              Your package will arrive in 3-5 business days at your pick up
-              location or in the comfort of your home.
+              {t("product.deliveryDesc")}
             </p>
           </div>
         </div>
         <div className="flex items-start gap-x-2">
           <Refresh />
           <div>
-            <span className="font-semibold">Simple exchanges</span>
+            <span className="font-semibold">{t("product.simpleExchanges")}</span>
             <p className="max-w-sm">
-              Is the fit not quite right? No worries - we&apos;ll exchange your
-              product for a new one.
+              {t("product.exchangesDesc")}
             </p>
           </div>
         </div>
         <div className="flex items-start gap-x-2">
           <Back />
           <div>
-            <span className="font-semibold">Easy returns</span>
+            <span className="font-semibold">{t("product.easyReturns")}</span>
             <p className="max-w-sm">
-              Just return your product and we&apos;ll refund your money. No
-              questions asked – we&apos;ll do our best to make sure your return
-              is hassle-free.
+              {t("product.returnsDesc")}
             </p>
           </div>
         </div>

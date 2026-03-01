@@ -13,10 +13,10 @@ const Hero = ({ slides }: HeroProps) => {
 
   // Use fallback if no slides exist in CMS
   const activeSlides = slides && slides.length > 0 ? slides : [{
-    title: "Fresh Deshi Groceries. Farm to Table.",
-    subtitle: "Reach for a healthier you with organic, locally sourced foods.",
-    image_url: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&h=600&fit=crop",
-    badge_text: "100% DESHI"
+    title: "Premium Spices & Aromatic Rice",
+    subtitle: "100% organic, farm-direct spices and hand-selected rice varieties from Bangladesh.",
+    image_url: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=600&h=600&fit=crop",
+    badge_text: "100% ORGANIC"
   }]
 
   useEffect(() => {

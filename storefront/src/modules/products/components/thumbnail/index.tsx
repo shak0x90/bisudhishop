@@ -27,12 +27,10 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
   return (
     <Container
       className={clx(
-        "relative w-full overflow-hidden p-4 bg-ui-bg-subtle shadow-elevation-card-rest rounded-large group-hover:shadow-elevation-card-hover transition-shadow ease-in-out duration-150",
+        "relative w-full overflow-hidden bg-white shadow-sm group-hover:shadow-md transition-shadow ease-in-out duration-300 rounded-xl",
         className,
         {
-          "aspect-[11/14]": isFeatured,
-          "aspect-[9/16]": !isFeatured && size !== "square",
-          "aspect-[1/1]": size === "square",
+          "aspect-square": true, // Standardize on square aspect ratio for clean e-commerce look
           "w-[180px]": size === "small",
           "w-[290px]": size === "medium",
           "w-[440px]": size === "large",
@@ -54,9 +52,9 @@ const ImageOrPlaceholder = ({
     <Image
       src={image}
       alt="Thumbnail"
-      className="absolute inset-0 object-cover object-center"
+      className="absolute inset-0 object-contain object-center p-4 transition-transform duration-300 group-hover:scale-105"
       draggable={false}
-      quality={50}
+      quality={80}
       sizes="(max-width: 576px) 280px, (max-width: 768px) 360px, (max-width: 992px) 480px, 800px"
       fill
     />

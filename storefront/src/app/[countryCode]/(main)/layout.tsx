@@ -9,6 +9,9 @@ import Footer from "@modules/layout/templates/footer"
 import Nav from "@modules/layout/templates/nav"
 import FreeShippingPriceNudge from "@modules/shipping/components/free-shipping-price-nudge"
 import FloatingWhatsApp from "@modules/common/components/floating-whatsapp"
+import { getDictionary, Locale } from "@i18n/get-dictionary"
+import { IntlProvider } from "@lib/providers/intl-provider"
+import { cookies } from "next/headers"
 
 export const metadata: Metadata = {
   metadataBase: new URL(getBaseURL()),
@@ -25,8 +28,13 @@ export default async function PageLayout(props: { children: React.ReactNode }) {
     shippingOptions = shipping_options
   }
 
+  // Setup i18n
+  const dictionary = await getDictionary()
+  const cookieStore = await cookies()
+  const locale = (cookieStore.get("NEXT_LOCALE")?.value as Locale) || "en"
+
   return (
-    <>
+    <IntlProvider dictionary={dictionary} locale={locale}>
       <Nav />
       {customer && cart && (
         <CartMismatchBanner customer={customer} cart={cart} />
@@ -42,6 +50,6 @@ export default async function PageLayout(props: { children: React.ReactNode }) {
       {props.children}
       <Footer />
       <FloatingWhatsApp />
-    </>
+    </IntlProvider>
   )
 }

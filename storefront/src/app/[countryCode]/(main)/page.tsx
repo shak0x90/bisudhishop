@@ -1,17 +1,14 @@
 import { Metadata } from "next"
 
-import FeaturedProducts from "@modules/home/components/featured-products"
 import Hero from "@modules/home/components/hero"
-import PromoBanners from "@modules/home/components/promo-banners"
+import AllProducts from "@modules/home/components/all-products"
+import WhyChooseUs from "@modules/home/components/why-choose-us"
 import Categories from "@modules/home/components/categories"
-import DiscountBanners from "@modules/home/components/discount-banners"
-import { listCollections } from "@lib/data/collections"
-import { getRegion } from "@lib/data/regions"
 
 export const metadata: Metadata = {
-  title: "Organichub — Fresh Deshi Groceries & Organic Foods",
+  title: "BisudhiShop — Premium Organic Spices & Rice",
   description:
-    "Shop fresh, locally sourced organic groceries delivered to your doorstep in Dhaka. Vegetables, fruits, meat, fish, dairy and more.",
+    "Shop premium organic spices, aromatic rice, and curated gift boxes. 100% natural, farm-direct from Bangladesh.",
 }
 
 export default async function Home(props: {
@@ -21,16 +18,9 @@ export default async function Home(props: {
 
   const { countryCode } = params
 
-  const region = await getRegion(countryCode)
-
-  const { collections } = await listCollections({
-    fields: "id, handle, title",
-  })
-
-  // Fetch Slides on the server side to bypass Client-Cache
-  let slides = []
+  // Fetch Slides on the server side
+  let slides: any[] = []
   try {
-    // Ping the backend Medusa URL directly from Server Component
     const backendRes = await fetch(`${process.env.MEDUSA_BACKEND_URL || 'http://localhost:9000'}/store/slides`, {
       method: "GET",
       headers: {
@@ -50,19 +40,12 @@ export default async function Home(props: {
     console.error("Failed to fetch slides on server", err)
   }
 
-  if (!collections || !region) {
-    return null
-  }
-
   return (
     <>
       <Hero slides={slides} />
-      <PromoBanners />
+      <AllProducts countryCode={countryCode} />
+      <WhyChooseUs />
       <Categories />
-      <div className="py-2">
-        <FeaturedProducts collections={collections} region={region} />
-      </div>
-      <DiscountBanners />
     </>
   )
 }

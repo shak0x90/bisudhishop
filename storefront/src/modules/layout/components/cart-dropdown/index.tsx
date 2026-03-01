@@ -16,12 +16,14 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import Thumbnail from "@modules/products/components/thumbnail"
 import { usePathname } from "next/navigation"
 import { Fragment, useEffect, useRef, useState } from "react"
+import { useTranslation } from "@lib/providers/intl-provider"
 
 const CartDropdown = ({
   cart: cartState,
 }: {
   cart?: HttpTypes.StoreCart | null
 }) => {
+  const { t } = useTranslation()
   const [activeTimer, setActiveTimer] = useState<NodeJS.Timer | undefined>(
     undefined
   )
@@ -106,7 +108,7 @@ const CartDropdown = ({
             data-testid="nav-cart-dropdown"
           >
             <div className="p-4 flex items-center justify-center">
-              <h3 className="text-large-semi">Cart</h3>
+              <h3 className="text-large-semi">{t("cart.title")}</h3>
             </div>
             {cartState && cartState.items?.length ? (
               <>
@@ -154,7 +156,7 @@ const CartDropdown = ({
                                   data-testid="cart-item-quantity"
                                   data-value={item.quantity}
                                 >
-                                  Quantity: {item.quantity}
+                                  {t("product.quantity")}: {item.quantity}
                                 </span>
                               </div>
                               <div className="flex justify-end">
@@ -171,7 +173,7 @@ const CartDropdown = ({
                             className="mt-1"
                             data-testid="cart-item-remove-button"
                           >
-                            Remove
+                            {t("cart.remove")}
                           </DeleteButton>
                         </div>
                       </div>
@@ -180,7 +182,7 @@ const CartDropdown = ({
                 <div className="p-4 flex flex-col gap-y-4 text-small-regular">
                   <div className="flex items-center justify-between">
                     <span className="text-ui-fg-base font-semibold">
-                      Subtotal{" "}
+                      {t("cart.subtotal")}{" "}
                       <span className="font-normal">(excl. taxes)</span>
                     </span>
                     <span
@@ -200,7 +202,7 @@ const CartDropdown = ({
                       size="large"
                       data-testid="go-to-cart-button"
                     >
-                      Go to cart
+                      {t("cart.goToCheckout")}
                     </Button>
                   </LocalizedClientLink>
                 </div>
@@ -211,7 +213,7 @@ const CartDropdown = ({
                   <div className="bg-gray-900 text-small-regular flex items-center justify-center w-6 h-6 rounded-full text-white">
                     <span>0</span>
                   </div>
-                  <span>Your shopping bag is empty.</span>
+                  <span>{t("cart.empty")}</span>
                   <div>
                     <LocalizedClientLink href="/store">
                       <>

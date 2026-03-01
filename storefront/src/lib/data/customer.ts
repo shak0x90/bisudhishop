@@ -98,6 +98,11 @@ export async function signup(_currentState: unknown, formData: FormData) {
 
     await transferCart()
 
+    const redirectUrl = formData.get("redirect_url") as string | null
+    if (redirectUrl) {
+      redirect(redirectUrl)
+    }
+
     return createdCustomer
   } catch (error: any) {
     return error.toString()
@@ -124,6 +129,11 @@ export async function login(_currentState: unknown, formData: FormData) {
     await transferCart()
   } catch (error: any) {
     return error.toString()
+  }
+
+  const redirectUrl = formData.get("redirect_url") as string | null
+  if (redirectUrl) {
+    redirect(redirectUrl)
   }
 }
 

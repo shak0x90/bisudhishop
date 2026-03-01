@@ -1,0 +1,44 @@
+{
+    "nav": {
+        "cart": "Cart",
+        "search": "Search",
+        "account": "Account",
+        "wishlist": "Wishlist",
+        "shop": "Shop",
+        "trackOrder": "Track Order"
+    },
+    "product": {
+        "addToCart": "Add to Cart",
+        "adding": "Adding...",
+        "added": "Added!",
+        "outOfStock": "Out of stock",
+        "selectVariant": "Select variant",
+        "quantity": "Quantity",
+        "orderViaWhatsApp": "Order via WhatsApp",
+        "orderViaMessenger": "Order via Messenger",
+        "productInformation": "Product Information",
+        "returnPolicy": "Return Policy",
+        "shipping": "Shipping",
+        "fastDelivery": "Fast delivery",
+        "deliveryDesc": "Your package will arrive in 3-5 business days at your pick up location or in the comfort of your home.",
+        "simpleExchanges": "Simple exchanges",
+        "exchangesDesc": "Is the fit not quite right? No worries - we'll exchange your product for a new one.",
+        "easyReturns": "Easy returns",
+        "returnsDesc": "Just return your product and we'll refund your money. No questions asked – we'll do our best to make sure your return is hassle-free."
+    },
+    "cart": {
+        "title": "Cart",
+        "empty": "Your cart is empty",
+        "goToCheckout": "Go to checkout",
+        "subtotal": "Subtotal",
+        "taxes": "Taxes",
+        "shipping": "Shipping",
+        "total": "Total",
+        "remove": "Remove"
+    },
+    "checkout": {
+        "title": "Checkout",
+        "placeOrder": "Place order",
+        "processing": "Processing..."
+    }
+}

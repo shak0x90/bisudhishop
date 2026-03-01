@@ -12,7 +12,8 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import ProductPrice from "../product-price"
 import MobileActions from "./mobile-actions"
 import { useRouter } from "next/navigation"
-import { FaWhatsapp } from "react-icons/fa"
+import { FaWhatsapp, FaFacebookMessenger } from "react-icons/fa"
+import { useTranslation } from "@lib/providers/intl-provider"
 
 type ProductActionsProps = {
   product: HttpTypes.StoreProduct
@@ -36,9 +37,11 @@ export default function ProductActions({
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  const { t } = useTranslation()
 
   const [options, setOptions] = useState<Record<string, string | undefined>>({})
   const [isAdding, setIsAdding] = useState(false)
+  const [quantity, setQuantity] = useState(1)
   const countryCode = useParams().countryCode as string
 
   // If there is only 1 variant, preselect the options
@@ -129,7 +132,7 @@ export default function ProductActions({
 
     await addToCart({
       variantId: selectedVariant.id,
-      quantity: 1,
+      quantity,
       countryCode,
     })
 
@@ -140,7 +143,7 @@ export default function ProductActions({
   const handleWhatsAppOrder = () => {
     const phoneNumber = "8801711000000" // Replace with actual number if different
     const productUrl = typeof window !== "undefined" ? window.location.href : ""
-    const message = `Hello Organichub, I would like to order:\n\n*${product.title}*\n${selectedVariant ? `Variant: ${selectedVariant.title}\n` : ""}\nLink: ${productUrl}`
+    const message = `Hello Organichub, I would like to order:\n\n*${product.title}*\nQuantity: ${quantity}\n${selectedVariant ? `Variant: ${selectedVariant.title}\n` : ""}\nLink: ${productUrl}`
 
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`
     window.open(whatsappUrl, "_blank", "noopener,noreferrer")
@@ -173,7 +176,31 @@ export default function ProductActions({
 
         <ProductPrice product={product} variant={selectedVariant} />
 
-        <Button
+        {/* Quantity Selector */}
+        <div className="flex items-center gap-3">
+          <span className="text-sm font-semibold text-gray-700">{t("product.quantity")}:</span>
+          <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden">
+            <button
+              onClick={() => setQuantity(Math.max(1, quantity - 1))}
+              disabled={quantity <= 1 || isAdding}
+              className="w-11 h-11 flex items-center justify-center text-gray-600 hover:bg-gray-100 active:bg-gray-200 disabled:opacity-30 transition-colors text-xl font-medium"
+            >
+              −
+            </button>
+            <span className="w-12 h-11 flex items-center justify-center text-base font-bold text-brand-dark border-x border-gray-200 bg-gray-50">
+              {quantity}
+            </span>
+            <button
+              onClick={() => setQuantity(quantity + 1)}
+              disabled={isAdding}
+              className="w-11 h-11 flex items-center justify-center text-gray-600 hover:bg-gray-100 active:bg-gray-200 disabled:opacity-30 transition-colors text-xl font-medium"
+            >
+              +
+            </button>
+          </div>
+        </div>
+
+        <button
           onClick={handleAddToCart}
           disabled={
             !inStock ||
@@ -182,29 +209,54 @@ export default function ProductActions({
             isAdding ||
             !isValidVariant
           }
-          variant="primary"
-          className="w-full h-10"
-          isLoading={isAdding}
+          className="w-full h-12 rounded-lg bg-brand-green hover:bg-brand-green-dark text-white font-bold text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           data-testid="add-product-button"
         >
+          {isAdding ? (
+            <svg className="animate-spin w-5 h-5" viewBox="0 0 24 24" fill="none">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
+          ) : (
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" />
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+            </svg>
+          )}
           {!selectedVariant && !options
-            ? "Select variant"
+            ? t("product.selectVariant")
             : !inStock || !isValidVariant
-              ? "Out of stock"
-              : "Add to cart"}
-        </Button>
+              ? t("product.outOfStock")
+              : t("product.addToCart")}
+        </button>
 
         {/* Direct WhatsApp Order Button */}
-        <Button
+        <button
           onClick={handleWhatsAppOrder}
           disabled={!isValidVariant || !!disabled || isAdding}
-          variant="secondary"
-          className="w-full h-10 flex items-center justify-center gap-2 border-[#25D366] text-[#25D366] hover:bg-[#25D366] hover:text-white transition-colors"
+          className="w-full h-12 rounded-lg border-2 border-[#25D366] text-[#25D366] hover:bg-[#25D366] hover:text-white font-bold text-sm flex items-center justify-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           data-testid="whatsapp-order-button"
         >
-          <FaWhatsapp size={18} />
-          Order via WhatsApp
-        </Button>
+          <FaWhatsapp size={20} />
+          {t("product.orderViaWhatsApp")}
+        </button>
+
+        {/* Direct Messenger Order Button */}
+        <button
+          onClick={() => {
+            const pageId = "100000000000000" // Replace with actual Facebook Page ID or username
+            const productUrl = typeof window !== "undefined" ? window.location.href : ""
+            const message = `Hello Organichub, I would like to order:\n\n*${product.title}*\nQuantity: ${quantity}\n${selectedVariant ? `Variant: ${selectedVariant.title}\n` : ""}\nLink: ${productUrl}`
+            const messengerUrl = `https://m.me/${pageId}?text=${encodeURIComponent(message)}`
+            window.open(messengerUrl, "_blank", "noopener,noreferrer")
+          }}
+          disabled={!isValidVariant || !!disabled || isAdding}
+          className="w-full h-12 rounded-lg border-2 border-[#0084FF] text-[#0084FF] hover:bg-[#0084FF] hover:text-white font-bold text-sm flex items-center justify-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+          data-testid="messenger-order-button"
+        >
+          <FaFacebookMessenger size={20} />
+          Order via Messenger
+        </button>
 
         <MobileActions
           product={product}
@@ -216,6 +268,8 @@ export default function ProductActions({
           isAdding={isAdding}
           show={!inView}
           optionsDisabled={!!disabled || isAdding}
+          quantity={quantity}
+          setQuantity={setQuantity}
         />
       </div>
     </>

@@ -12,6 +12,7 @@ type SummaryProps = {
   cart: HttpTypes.StoreCart & {
     promotions: HttpTypes.StorePromotion[]
   }
+  customer: HttpTypes.StoreCustomer | null
 }
 
 function getCheckoutStep(cart: HttpTypes.StoreCart) {
@@ -24,22 +25,30 @@ function getCheckoutStep(cart: HttpTypes.StoreCart) {
   }
 }
 
-const Summary = ({ cart }: SummaryProps) => {
+import { useTranslation } from "@lib/providers/intl-provider"
+
+const Summary = ({ cart, customer }: SummaryProps) => {
+  const { t } = useTranslation()
   const step = getCheckoutStep(cart)
+
+  // If no customer, redirect to login page before checkout
+  const checkoutHref = customer
+    ? "/checkout?step=" + step
+    : "/account?redirect=/checkout"
 
   return (
     <div className="flex flex-col gap-y-4">
       <Heading level="h2" className="text-[2rem] leading-[2.75rem]">
-        Summary
+        {t("cart.title")}
       </Heading>
       <DiscountCode cart={cart} />
       <Divider />
       <CartTotals totals={cart} />
       <LocalizedClientLink
-        href={"/checkout?step=" + step}
+        href={checkoutHref}
         data-testid="checkout-button"
       >
-        <Button className="w-full h-10">Go to checkout</Button>
+        <Button className="w-full h-10">{t("cart.goToCheckout")}</Button>
       </LocalizedClientLink>
     </div>
   )

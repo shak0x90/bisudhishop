@@ -32,13 +32,13 @@ export default async function FeaturedProducts({
   }
 
   return (
-    <div className="content-container mx-auto px-8 py-12 font-nunito w-full">
+    <div className="content-container mx-auto px-4 lg:px-8 py-8 md:py-12 font-nunito w-full">
 
       {/* Section Title */}
-      <h2 className="text-3xl font-bold text-brand-dark mb-10 text-center md:text-left">Featured Products</h2>
+      <h2 className="text-2xl md:text-3xl font-bold text-brand-dark mb-8 md:mb-10 text-center md:text-left">Featured Products</h2>
 
       {/* Product Grid */}
-      <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+      <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-6">
         {pricedProducts.map((product) => (
           <li key={product.id}>
             <ProductPreview product={product} region={region} isFeatured />

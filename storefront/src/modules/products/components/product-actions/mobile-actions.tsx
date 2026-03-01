@@ -21,6 +21,8 @@ type MobileActionsProps = {
   isAdding?: boolean
   show: boolean
   optionsDisabled: boolean
+  quantity: number
+  setQuantity: (val: number) => void
 }
 
 const MobileActions: React.FC<MobileActionsProps> = ({
@@ -33,6 +35,8 @@ const MobileActions: React.FC<MobileActionsProps> = ({
   isAdding,
   show,
   optionsDisabled,
+  quantity,
+  setQuantity,
 }) => {
   const { state, open, close } = useToggleState()
 
@@ -70,65 +74,79 @@ const MobileActions: React.FC<MobileActionsProps> = ({
           leaveTo="opacity-0"
         >
           <div
-            className="bg-white flex flex-col gap-y-3 justify-center items-center text-large-regular p-4 h-full w-full border-t border-gray-200"
+            className="bg-white flex flex-col gap-y-3 justify-center items-center text-large-regular p-4 px-5 pb-6 lg:pb-4 h-full w-full border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]"
             data-testid="mobile-actions"
           >
-            <div className="flex items-center gap-x-2">
-              <span data-testid="mobile-title">{product.title}</span>
-              <span>—</span>
+            {/* Title and Price Row */}
+            <div className="flex items-center justify-between w-full">
+              <span className="font-semibold text-base line-clamp-1 flex-1 pr-2 text-brand-dark" data-testid="mobile-title">{product.title}</span>
               {selectedPrice ? (
-                <div className="flex items-end gap-x-2 text-ui-fg-base">
+                <div className="flex items-end gap-x-2 text-ui-fg-base shrink-0 font-bold">
                   {selectedPrice.price_type === "sale" && (
-                    <p>
-                      <span className="line-through text-small-regular">
-                        {selectedPrice.original_price}
-                      </span>
-                    </p>
+                    <span className="line-through text-small-regular text-gray-400 font-normal">
+                      {selectedPrice.original_price}
+                    </span>
                   )}
-                  <span
-                    className={clx({
-                      "text-ui-fg-interactive":
-                        selectedPrice.price_type === "sale",
-                    })}
-                  >
+                  <span className={clx({ "text-brand-green": selectedPrice.price_type === "sale", "text-brand-dark": selectedPrice.price_type !== "sale" })}>
                     {selectedPrice.calculated_price}
                   </span>
                 </div>
-              ) : (
-                <div></div>
-              )}
+              ) : null}
             </div>
-            <div className={clx("grid grid-cols-2 w-full gap-x-4", {
-              "!grid-cols-1": isSimple
-            })}>
-              {!isSimple && <Button
-                onClick={open}
-                variant="secondary"
-                className="w-full"
-                data-testid="mobile-actions-button"
-              >
-                <div className="flex items-center justify-between w-full">
-                  <span>
-                    {variant
-                      ? Object.values(options).join(" / ")
-                      : "Select Options"}
+
+            {/* Actions Row */}
+            <div className="flex flex-col gap-y-3 w-full">
+              {!isSimple && (
+                <button
+                  onClick={open}
+                  className="w-full h-10 flex items-center justify-between px-4 border border-gray-200 rounded-lg text-sm font-medium hover:bg-gray-50 active:bg-gray-100 transition-colors"
+                  data-testid="mobile-actions-button"
+                >
+                  <span className="text-gray-700">
+                    {variant ? Object.values(options).join(" / ") : "Select Options"}
                   </span>
                   <ChevronDown />
+                </button>
+              )}
+
+              <div className="flex items-center gap-x-3 w-full">
+                {/* Quantity Pill */}
+                <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden shrink-0 h-11 bg-white">
+                  <button
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    disabled={quantity <= 1 || isAdding}
+                    className="w-10 h-full flex items-center justify-center text-gray-600 hover:bg-gray-100 active:bg-gray-200 disabled:opacity-30 transition-colors text-xl font-medium"
+                  >
+                    −
+                  </button>
+                  <span className="w-10 h-full flex items-center justify-center text-sm font-bold text-brand-dark border-x border-gray-200 bg-gray-50">
+                    {quantity}
+                  </span>
+                  <button
+                    onClick={() => setQuantity(quantity + 1)}
+                    disabled={isAdding}
+                    className="w-10 h-full flex items-center justify-center text-gray-600 hover:bg-gray-100 active:bg-gray-200 disabled:opacity-30 transition-colors text-xl font-medium"
+                  >
+                    +
+                  </button>
                 </div>
-              </Button>}
-              <Button
-                onClick={handleAddToCart}
-                disabled={!inStock || !variant}
-                className="w-full"
-                isLoading={isAdding}
-                data-testid="mobile-cart-button"
-              >
-                {!variant
-                  ? "Select variant"
-                  : !inStock
-                  ? "Out of stock"
-                  : "Add to cart"}
-              </Button>
+
+                {/* Add to Cart */}
+                <button
+                  onClick={handleAddToCart}
+                  disabled={!inStock || !variant}
+                  className="flex-1 h-11 rounded-lg bg-brand-green hover:bg-brand-green-dark text-white font-bold text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                  data-testid="mobile-cart-button"
+                >
+                  {isAdding ? (
+                    <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                  ) : null}
+                  {!variant ? "Select variant" : !inStock ? "Out of stock" : "Add to Cart"}
+                </button>
+              </div>
             </div>
           </div>
         </Transition>
