@@ -50,8 +50,15 @@ npm install # or yarn install
 cp .env.template .env
 # Edit .env with your PostgreSQL/Redis connection strings
 
-# Run migrations and start the server
-npx medusa migrations run
+# Optional: Restore the database from the provided backup
+# This will save you time from running migrations and seeding products
+createdb -U postgres medusa-organichub
+psql -U postgres -d medusa-organichub < medusa-organichub-backup.sql
+
+# If you did not restore from the backup, run migrations yourself:
+# npx medusa migrations run
+
+# Start the server
 npm run dev
 ```
 
