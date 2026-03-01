@@ -209,7 +209,7 @@ export default function ProductActions({
             isAdding ||
             !isValidVariant
           }
-          className="w-full h-12 rounded-lg bg-brand-green hover:bg-brand-green-dark text-white font-bold text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full h-12 rounded-lg bg-brand-green hover:bg-brand-green-dark text-white font-bold text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
           data-testid="add-product-button"
         >
           {isAdding ? (
@@ -230,31 +230,45 @@ export default function ProductActions({
               : t("product.addToCart")}
         </button>
 
-        {/* Direct WhatsApp Order Button */}
+        {/* Trust badges */}
+        <div className="flex flex-col gap-1.5 py-3 px-1 border-t border-gray-100">
+          {[
+            { icon: "🌿", label: "Chemical-free sourcing" },
+            { icon: "👨‍🌾", label: "Direct from farmers" },
+            { icon: "📦", label: "Hygienically packed in Dhaka" },
+          ].map(({ icon, label }) => (
+            <div key={label} className="flex items-center gap-2 text-xs text-gray-500">
+              <span>{icon}</span>
+              <span>{label}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Direct WhatsApp Order Button — secondary outline */}
         <button
           onClick={handleWhatsAppOrder}
           disabled={!isValidVariant || !!disabled || isAdding}
-          className="w-full h-12 rounded-lg border-2 border-[#25D366] text-[#25D366] hover:bg-[#25D366] hover:text-white font-bold text-sm flex items-center justify-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full h-11 rounded-lg border border-[#25D366] text-[#25D366] hover:bg-[#25D366] hover:text-white font-semibold text-sm flex items-center justify-center gap-2 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           data-testid="whatsapp-order-button"
         >
-          <FaWhatsapp size={20} />
+          <FaWhatsapp size={18} />
           {t("product.orderViaWhatsApp")}
         </button>
 
-        {/* Direct Messenger Order Button */}
+        {/* Direct Messenger Order Button — muted text */}
         <button
           onClick={() => {
-            const pageId = "100000000000000" // Replace with actual Facebook Page ID or username
+            const pageId = "100000000000000"
             const productUrl = typeof window !== "undefined" ? window.location.href : ""
             const message = `Hello Organichub, I would like to order:\n\n*${product.title}*\nQuantity: ${quantity}\n${selectedVariant ? `Variant: ${selectedVariant.title}\n` : ""}\nLink: ${productUrl}`
             const messengerUrl = `https://m.me/${pageId}?text=${encodeURIComponent(message)}`
             window.open(messengerUrl, "_blank", "noopener,noreferrer")
           }}
           disabled={!isValidVariant || !!disabled || isAdding}
-          className="w-full h-12 rounded-lg border-2 border-[#0084FF] text-[#0084FF] hover:bg-[#0084FF] hover:text-white font-bold text-sm flex items-center justify-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+          className="w-full h-10 rounded-lg text-gray-400 hover:text-[#0084FF] font-medium text-sm flex items-center justify-center gap-2 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           data-testid="messenger-order-button"
         >
-          <FaFacebookMessenger size={20} />
+          <FaFacebookMessenger size={16} />
           Order via Messenger
         </button>
 
