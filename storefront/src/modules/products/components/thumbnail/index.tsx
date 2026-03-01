@@ -2,8 +2,6 @@ import { Container, clx } from "@medusajs/ui"
 import Image from "next/image"
 import React from "react"
 
-import PlaceholderImage from "@modules/common/icons/placeholder-image"
-
 type ThumbnailProps = {
   thumbnail?: string | null
   // TODO: Fix image typings
@@ -30,7 +28,7 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
         "relative w-full overflow-hidden bg-white shadow-sm group-hover:shadow-md transition-shadow ease-in-out duration-300 rounded-xl",
         className,
         {
-          "aspect-square": true, // Standardize on square aspect ratio for clean e-commerce look
+          "aspect-square": true,
           "w-[180px]": size === "small",
           "w-[290px]": size === "medium",
           "w-[440px]": size === "large",
@@ -51,7 +49,7 @@ const ImageOrPlaceholder = ({
   return image ? (
     <Image
       src={image}
-      alt="Thumbnail"
+      alt="Product image"
       className="absolute inset-0 object-contain object-center p-4 transition-transform duration-300 group-hover:scale-105"
       draggable={false}
       quality={80}
@@ -59,9 +57,15 @@ const ImageOrPlaceholder = ({
       fill
     />
   ) : (
-    <div className="w-full h-full absolute inset-0 flex items-center justify-center">
-      <PlaceholderImage size={size === "small" ? 16 : 24} />
-    </div>
+    <Image
+      src="/images/fallback-food.png"
+      alt="Organic grocery product"
+      className="absolute inset-0 object-contain object-center p-6 opacity-60"
+      draggable={false}
+      quality={70}
+      sizes="(max-width: 576px) 280px, (max-width: 768px) 360px, (max-width: 992px) 480px, 800px"
+      fill
+    />
   )
 }
 
