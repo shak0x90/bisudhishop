@@ -53,8 +53,8 @@ export default async function Nav() {
         </div>
       </div>
 
-      <header className="relative h-24 mx-auto duration-200 bg-white shadow-sm">
-        <nav className="content-container mx-auto flex items-center justify-between w-full h-full text-sm font-semibold px-8">
+      <header className="relative h-16 md:h-20 mx-auto duration-200 bg-white shadow-sm">
+        <nav className="content-container mx-auto flex items-center justify-between w-full h-full text-sm font-semibold px-4 md:px-8">
 
           {/* Logo */}
           <div className="flex-1 basis-0 h-full flex items-center">
@@ -72,33 +72,50 @@ export default async function Nav() {
           </div>
 
           {/* Right Icons */}
-          <div className="flex items-center gap-x-6 h-full flex-1 basis-0 justify-end">
-            <SearchBar />
+          {/*
+            Desktop: gap-6 (24px) between icons, pr-0 (content-container handles edge)
+            Mobile: gap-4 (16px) between icons, icons hidden behind hamburger except cart
+          */}
+          <div className="flex items-center h-full flex-1 basis-0 justify-end gap-4 md:gap-6">
 
-            <div className="flex items-center gap-5 text-brand-dark">
-              {/* Wishlist */}
+            {/* Search — hidden on mobile, shown on md+ */}
+            <div className="hidden md:flex">
+              <SearchBar />
+            </div>
+
+            {/* Icon cluster — all 20×20, vertically centered, gap-4 mobile / gap-6 desktop */}
+            <div className="flex items-center gap-4 md:gap-6 text-brand-dark">
+
+              {/* Wishlist — visible on all screen sizes */}
               <Suspense fallback={<div className="w-5 h-5" />}>
                 <WishlistButton />
               </Suspense>
 
-              {/* Cart */}
-              <Suspense fallback={<div>Cart</div>}>
+              {/* Cart — always visible */}
+              <Suspense fallback={<div className="w-5 h-5" />}>
                 <CartButton />
               </Suspense>
 
-              {/* User */}
-              <LocalizedClientLink href="/account" className="cursor-pointer hover:text-brand-green">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
+              {/* Account — visible on all screen sizes */}
+              <LocalizedClientLink
+                href="/account"
+                className="flex items-center cursor-pointer hover:text-brand-green transition-colors"
+                aria-label="Account"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
               </LocalizedClientLink>
 
-              {/* Language Switcher */}
-              <div className="ml-1 border-l border-gray-200 pl-4">
+              {/* Language Switcher — desktop only (inside hamburger on mobile) */}
+              <div className="hidden md:flex items-center border-l border-gray-200 pl-5">
                 <LanguageSwitcher />
               </div>
             </div>
 
-            {/* Mobile menu toggle */}
-            <div className="flex lg:hidden ml-4">
+            {/* Mobile hamburger — rightmost, consistent 16px from edge */}
+            <div className="flex lg:hidden items-center">
               <SideMenu regions={regions} locales={locales} currentLocale={currentLocale} />
             </div>
           </div>
