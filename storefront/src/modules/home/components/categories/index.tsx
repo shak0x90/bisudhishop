@@ -54,7 +54,7 @@ const Categories = async () => {
     const displayCategories = sortedCategories.slice(0, 6)
 
     return (
-        <div className="content-container mx-auto px-6 md:px-8 py-14 font-nunito">
+        <div id="categories" className="content-container mx-auto px-6 md:px-8 py-12 md:py-20 font-nunito">
             <div className="text-center mb-10">
                 <span className="font-caveat text-2xl text-brand-green">Browse</span>
                 <h2 className="text-3xl md:text-4xl font-bold text-brand-dark mt-1">Shop by Category</h2>

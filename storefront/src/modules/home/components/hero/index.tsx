@@ -1,8 +1,8 @@
 "use client"
 
 import { Button } from "@medusajs/ui"
-import Image from "next/image"
 import { useState, useEffect } from "react"
+import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 type HeroProps = {
   slides: any[]
@@ -11,101 +11,107 @@ type HeroProps = {
 const Hero = ({ slides }: HeroProps) => {
   const [currentSlide, setCurrentSlide] = useState(0)
 
-  // Use fallback if no slides exist in CMS
   const activeSlides = slides && slides.length > 0 ? slides : [{
-    title: "Premium Spices & Aromatic Rice",
-    subtitle: "100% organic, farm-direct spices and hand-selected rice varieties from Bangladesh.",
-    image_url: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=600&h=600&fit=crop",
-    badge_text: "100% ORGANIC"
+    title: "Safe, Fresh Food for Your Family",
+    subtitle: "Chemical-free groceries from Bangladeshi farmers, delivered to your door.",
+    image_url: "https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=700&h=500&fit=crop",
+    badge_text: "CHEMICAL FREE"
   }]
 
   useEffect(() => {
-    if (activeSlides.length <= 1) return;
+    if (activeSlides.length <= 1) return
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % activeSlides.length)
     }, 5000)
     return () => clearInterval(timer)
   }, [activeSlides])
 
-  if (activeSlides.length === 0) return null;
+  if (activeSlides.length === 0) return null
 
   const slide = activeSlides[currentSlide]
 
   return (
     <div className="w-full relative bg-brand-light border-b border-gray-100 overflow-hidden font-nunito">
 
-      {/* Decorative leaf background watermarks */}
-      <div className="absolute top-1/2 left-0 -translate-y-1/2 w-96 h-96 bg-contain bg-no-repeat opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Cpath d=\'M0 100 Q 50 0 100 0 Q 50 100 0 100\' fill=\'%23000\'/%3E%3C/svg%3E")' }}></div>
+      <div className="content-container mx-auto px-6 md:px-8">
+        {/*
+          Mobile: stacked vertically, text on top, image below.
+          Desktop: side by side.
+          Max height capped at ~80vh on mobile via py constraints.
+        */}
+        <div className="flex flex-col md:flex-row items-center gap-6 md:gap-12 py-10 md:py-20">
 
-      <div className="content-container mx-auto px-8 min-h-[600px] flex flex-col md:flex-row items-center justify-between relative z-10">
+          {/* ── Text side ── */}
+          <div className="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left order-1">
 
-        {/* Left Side: Text Content */}
-        <div className="flex flex-col items-center md:items-start text-center md:text-left pt-20 pb-10 md:py-32 max-w-xl z-20">
+            {/* Label */}
+            <span className="font-caveat text-xl md:text-2xl text-brand-green tracking-wide mb-2">
+              Locally Grown, Carefully Delivered
+            </span>
 
-          <div className="flex flex-col items-center md:items-start mb-6">
-            <span className="font-caveat text-4xl text-brand-green tracking-wider">LOCAL & FRESH</span>
-          </div>
+            {/* Headline — no min-h, just clamp */}
+            <h1 className="text-3xl sm:text-4xl md:text-5xl text-brand-dark font-bold leading-tight mb-3 tracking-tight">
+              {slide.title}
+            </h1>
 
-          <h1 className="text-4xl sm:text-5xl md:text-6xl text-brand-dark font-bold leading-tight mb-4 tracking-tight min-h-[120px] md:min-h-0 flex items-center">
-            <span className="block w-full">{slide.title}</span>
-          </h1>
+            {/* Subtitle — max 2 lines */}
+            <p className="text-gray-500 text-base md:text-lg mb-7 max-w-sm md:max-w-none line-clamp-2">
+              {slide.subtitle}
+            </p>
 
-          <p className="text-gray-500 mb-10 text-lg min-h-[56px] md:min-h-0 flex items-center">
-            {slide.subtitle}
-          </p>
+            {/* Primary CTA */}
+            <Button
+              variant="primary"
+              className="bg-brand-green hover:bg-brand-green-dark text-white border-none rounded-lg px-7 py-3 h-11 text-sm font-bold tracking-wider uppercase transition-all shadow-md w-full sm:w-auto mb-3"
+            >
+              Shop Fresh Groceries
+            </Button>
 
-          <Button variant="primary" className="bg-brand-green hover:bg-brand-green-dark text-white border-none rounded-sm px-8 py-3 h-12 text-sm font-bold tracking-widest uppercase transition-all shadow-[0_4px_14px_0_rgba(97,206,112,0.39)] hover:shadow-[0_6px_20px_rgba(97,206,112,0.23)] w-[200px]">
-            START SHOPPING
-          </Button>
-
-          {/* Slider dots indicator */}
-          {activeSlides.length > 1 && (
-            <div className="flex gap-2 mt-20 md:mt-32">
-              {activeSlides.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentSlide(index)}
-                  className={`w-2 h-2 rounded-full transition-colors ${index === currentSlide ? "bg-brand-green" : "bg-gray-300"
-                    }`}
-                  aria-label={`Go to slide ${index + 1}`}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Right Side: Image Content */}
-        <div className="relative w-full md:w-1/2 flex justify-center md:justify-end mt-10 md:mt-0 z-10">
-
-          {/* Main Hero Image Placeholder */}
-          <div className="relative w-full max-w-[500px] aspect-square flex items-center justify-center">
-            {/* The Ajvar Jar - using a placeholder image */}
-            <div className="absolute right-0 bottom-0 top-0 left-0">
-              {/* Background sketched leaves under the jar */}
-              <svg className="absolute w-[120%] h-[120%] -top-[10%] -left-[10%] opacity-20 text-blue-300" viewBox="0 0 200 200" fill="currentColor">
-                <path d="M50 150 Q 80 100 150 50 Q 120 100 50 150" />
-                <path d="M70 120 Q 100 70 170 20 Q 140 70 70 120" />
-                <path d="M100 180 Q 130 130 200 80 Q 170 130 100 180" />
+            {/* Soft anchor link */}
+            <a
+              href="#categories"
+              className="text-brand-green font-medium text-sm hover:text-brand-green-dark transition-colors flex items-center gap-1.5 mt-1"
+            >
+              Browse Categories
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M12 5v14M5 12l7 7 7-7" />
               </svg>
-            </div>
+            </a>
 
-            <img
-              src={slide.image_url}
-              alt={slide.title}
-              className="relative z-20 w-full h-full object-cover rounded-3xl rotate-[-5deg] shadow-2xl transition-opacity duration-500"
-              style={{ mixBlendMode: 'multiply', aspectRatio: '1/1' }}
-            />
-
-            {/* ECO Friendly Badge */}
-            {slide.badge_text && (
-              <div className="absolute top-[10%] right-[10%] z-30 bg-[#423326] text-white rounded-full w-28 h-28 flex flex-col items-center justify-center text-center p-2 shadow-lg border-[1px] border-dashed border-white border-opacity-30 transform rotate-12 transition-all duration-500">
-                <span className="font-caveat flex flex-col text-2xl leading-none font-bold whitespace-pre-line">{slide.badge_text}</span>
+            {/* Slide dots */}
+            {activeSlides.length > 1 && (
+              <div className="flex gap-2 mt-5">
+                {activeSlides.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentSlide(index)}
+                    className={`w-2 h-2 rounded-full transition-colors ${index === currentSlide ? "bg-brand-green" : "bg-gray-300"}`}
+                    aria-label={`Go to slide ${index + 1}`}
+                  />
+                ))}
               </div>
             )}
           </div>
 
-        </div>
+          {/* ── Image side ── */}
+          {/* Hidden on very small screens (< 380px), shown from xs up */}
+          <div className="w-full md:w-1/2 flex justify-center order-2 md:justify-end">
+            <div className="relative w-full max-w-[320px] md:max-w-[440px] aspect-[4/3] md:aspect-square rounded-2xl overflow-hidden shadow-xl">
+              <img
+                src={slide.image_url}
+                alt={slide.title}
+                className="w-full h-full object-cover transition-opacity duration-500"
+              />
+              {/* Badge */}
+              {slide.badge_text && (
+                <div className="absolute top-3 right-3 bg-[#2B2D26]/90 text-white rounded-full w-16 h-16 flex items-center justify-center text-center p-1 shadow-lg">
+                  <span className="font-caveat text-[11px] leading-tight font-bold">{slide.badge_text}</span>
+                </div>
+              )}
+            </div>
+          </div>
 
+        </div>
       </div>
     </div>
   )

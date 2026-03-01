@@ -1,9 +1,11 @@
 import { Metadata } from "next"
 
 import Hero from "@modules/home/components/hero"
-import AllProducts from "@modules/home/components/all-products"
+import FreshThisWeek from "@modules/home/components/all-products"
 import WhyChooseUs from "@modules/home/components/why-choose-us"
 import Categories from "@modules/home/components/categories"
+import MeetFarmers from "@modules/home/components/meet-farmers"
+import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 export const metadata: Metadata = {
   title: "BisudhiShop — Premium Organic Spices & Rice",
@@ -42,10 +44,39 @@ export default async function Home(props: {
 
   return (
     <>
+      {/* 1️⃣ Hero — emotional */}
       <Hero slides={slides} />
-      <AllProducts countryCode={countryCode} />
+
+      {/* 2️⃣ Farmer story */}
+      <MeetFarmers />
+
+      {/* 3️⃣ Fresh This Week — 6-8 products, curated feel */}
+      <FreshThisWeek countryCode={countryCode} />
+
+      {/* 4️⃣ Why Families Trust Us */}
       <WhyChooseUs />
+
+      {/* 5️⃣ Categories */}
       <Categories />
+
+      {/* 6️⃣ Final CTA */}
+      <section className="bg-brand-green py-16 font-nunito text-center">
+        <div className="content-container mx-auto px-6">
+          <span className="font-caveat text-2xl text-brand-green-light block mb-2">Ready to order?</span>
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            Your weekly basket, delivered fresh.
+          </h2>
+          <p className="text-brand-green-light text-lg mb-8 max-w-xl mx-auto">
+            Join Dhaka families eating cleaner, safer, and more delicious food every week.
+          </p>
+          <LocalizedClientLink
+            href="/store"
+            className="inline-block bg-white text-brand-green font-bold py-3 px-10 rounded-xl hover:bg-brand-cream transition-all shadow-lg text-sm uppercase tracking-wider"
+          >
+            Shop Fresh Groceries
+          </LocalizedClientLink>
+        </div>
+      </section>
     </>
   )
 }
