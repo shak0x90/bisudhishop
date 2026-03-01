@@ -7,6 +7,12 @@
         "shop": "Shop",
         "trackOrder": "Track Order"
     },
+    "hero": {
+        "label": "Locally Grown, Carefully Delivered",
+        "headline": "Safe, Fresh Food for Your Family",
+        "subtext": "We connect Dhaka families directly with trusted Bangladeshi farmers. Chemical-free groceries, packed with care.",
+        "cta": "Shop Fresh Groceries"
+    },
     "product": {
         "addToCart": "Add to Cart",
         "adding": "Adding...",
@@ -20,11 +26,17 @@
         "returnPolicy": "Return Policy",
         "shipping": "Shipping",
         "fastDelivery": "Fast delivery",
-        "deliveryDesc": "Your package will arrive in 3-5 business days at your pick up location or in the comfort of your home.",
+        "deliveryDesc": "Your package will arrive within 1-2 business days, freshly packed and delivered safely within Dhaka.",
         "simpleExchanges": "Simple exchanges",
         "exchangesDesc": "Is the fit not quite right? No worries - we'll exchange your product for a new one.",
         "easyReturns": "Easy returns",
         "returnsDesc": "Just return your product and we'll refund your money. No questions asked – we'll do our best to make sure your return is hassle-free."
+    },
+    "trust": {
+        "chemicalFree": "Chemical-free sourcing",
+        "directFarmers": "Direct from farmers",
+        "hygienicallyPacked": "Hygienically packed in Dhaka",
+        "freshlyPacked": "Freshly packed in Dhaka"
     },
     "cart": {
         "title": "Cart",
@@ -34,7 +46,8 @@
         "taxes": "Taxes",
         "shipping": "Shipping",
         "total": "Total",
-        "remove": "Remove"
+        "remove": "Remove",
+        "reassurance": "Packed hygienically and delivered safely within Dhaka."
     },
     "checkout": {
         "title": "Checkout",
