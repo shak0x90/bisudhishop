@@ -44,6 +44,11 @@ const Summary = ({ cart, customer }: SummaryProps) => {
       <DiscountCode cart={cart} />
       <Divider />
       <CartTotals totals={cart} />
+      {/* Reassurance line */}
+      <p className="text-xs text-brand-sage flex items-center gap-1.5">
+        <span>📦</span>
+        <span>{t("cart.reassurance")}</span>
+      </p>
       <LocalizedClientLink
         href={checkoutHref}
         data-testid="checkout-button"
