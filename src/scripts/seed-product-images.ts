@@ -1,11 +1,11 @@
-import { ExecArgs } from "@medusajs/framework/types"
+
 import { Modules } from "@medusajs/framework/utils"
 
 /**
  * Seed script to add multiple images to existing products.
  * Run: npx medusa exec src/scripts/seed-product-images.ts
  */
-export default async function seedProductImages({ container }: ExecArgs) {
+export default async function seedProductImages({ container }: any) {
     const productService = container.resolve(Modules.PRODUCT)
 
     // Additional images mapped by product handle

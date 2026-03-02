@@ -1,4 +1,3 @@
-import { ExecArgs } from "@medusajs/framework/types";
 import {
   ContainerRegistrationKeys,
   Modules,
@@ -11,7 +10,7 @@ import {
 } from "@medusajs/medusa/core-flows";
 import { ApiKey } from "../../.medusa/types/query-entry-points";
 
-export default async function seedDemoData({ container }: ExecArgs) {
+export default async function seedDemoData({ container }: any) {
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER);
   const query = container.resolve(ContainerRegistrationKeys.QUERY);
   const salesChannelModuleService = container.resolve(Modules.SALES_CHANNEL);

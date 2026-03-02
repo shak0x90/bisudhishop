@@ -1,4 +1,4 @@
-import { CreateInventoryLevelInput, ExecArgs } from "@medusajs/framework/types";
+
 import {
     ContainerRegistrationKeys,
     Modules,
@@ -51,7 +51,7 @@ const updateStoreCurrencies = createWorkflow(
     }
 );
 
-export default async function seedGroceryData({ container }: ExecArgs) {
+export default async function seedGroceryData({ container }: any) {
     const logger = container.resolve(ContainerRegistrationKeys.LOGGER);
     const link = container.resolve(ContainerRegistrationKeys.LINK);
     const query = container.resolve(ContainerRegistrationKeys.QUERY);
@@ -514,7 +514,7 @@ export default async function seedGroceryData({ container }: ExecArgs) {
         fields: ["id"],
     });
 
-    const inventoryLevels: CreateInventoryLevelInput[] = [];
+    const inventoryLevels: any[] = [];
     for (const inventoryItem of inventoryItems) {
         inventoryLevels.push({
             location_id: stockLocation.id,

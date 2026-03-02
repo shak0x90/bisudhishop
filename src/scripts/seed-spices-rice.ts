@@ -1,4 +1,4 @@
-import { CreateInventoryLevelInput, ExecArgs } from "@medusajs/framework/types";
+
 import {
     ContainerRegistrationKeys,
     Modules,
@@ -10,7 +10,7 @@ import {
     createShippingProfilesWorkflow,
 } from "@medusajs/medusa/core-flows";
 
-export default async function seedSpicesAndRice({ container }: ExecArgs) {
+export default async function seedSpicesAndRice({ container }: any) {
     const logger = container.resolve(ContainerRegistrationKeys.LOGGER);
     const query = container.resolve(ContainerRegistrationKeys.QUERY);
     const salesChannelModuleService = container.resolve(Modules.SALES_CHANNEL);
@@ -375,7 +375,7 @@ export default async function seedSpicesAndRice({ container }: ExecArgs) {
 
     const existingItemIds = new Set(existingLevels.map((l: any) => l.inventory_item_id));
 
-    const inventoryLevels: CreateInventoryLevelInput[] = [];
+    const inventoryLevels: any[] = [];
     for (const inventoryItem of inventoryItems) {
         if (!existingItemIds.has(inventoryItem.id)) {
             inventoryLevels.push({
