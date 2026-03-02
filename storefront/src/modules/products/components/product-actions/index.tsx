@@ -255,7 +255,7 @@ export default function ProductActions({
           {t("product.orderViaWhatsApp")}
         </button>
 
-        {/* Direct Messenger Order Button — muted text */}
+        {/* Direct Messenger Order Button */}
         <button
           onClick={() => {
             const pageId = "100000000000000"
@@ -265,10 +265,10 @@ export default function ProductActions({
             window.open(messengerUrl, "_blank", "noopener,noreferrer")
           }}
           disabled={!isValidVariant || !!disabled || isAdding}
-          className="w-full h-10 rounded-lg text-gray-400 hover:text-[#0084FF] font-medium text-sm flex items-center justify-center gap-2 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          className="w-full h-11 mt-2 rounded-lg border border-[#0084FF] text-[#0084FF] hover:bg-[#0084FF] hover:text-white font-semibold text-sm flex items-center justify-center gap-2 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           data-testid="messenger-order-button"
         >
-          <FaFacebookMessenger size={16} />
+          <FaFacebookMessenger size={18} />
           Order via Messenger
         </button>
 

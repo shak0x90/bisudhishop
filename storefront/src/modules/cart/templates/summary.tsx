@@ -12,7 +12,7 @@ type SummaryProps = {
   cart: HttpTypes.StoreCart & {
     promotions: HttpTypes.StorePromotion[]
   }
-  customer: HttpTypes.StoreCustomer | null
+  customer?: HttpTypes.StoreCustomer | null
 }
 
 function getCheckoutStep(cart: HttpTypes.StoreCart) {
@@ -27,14 +27,12 @@ function getCheckoutStep(cart: HttpTypes.StoreCart) {
 
 import { useTranslation } from "@lib/providers/intl-provider"
 
-const Summary = ({ cart, customer }: SummaryProps) => {
+const Summary = ({ cart }: SummaryProps) => {
   const { t } = useTranslation()
   const step = getCheckoutStep(cart)
 
-  // If no customer, redirect to login page before checkout
-  const checkoutHref = customer
-    ? "/checkout?step=" + step
-    : "/account?redirect=/checkout"
+  // Allow both guests and logged-in customers to proceed to checkout
+  const checkoutHref = "/checkout?step=" + step
 
   return (
     <div className="flex flex-col gap-y-4">

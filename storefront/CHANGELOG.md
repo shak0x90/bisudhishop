@@ -6,6 +6,18 @@ All notable changes to the BisudhiShop storefront are documented here.
 
 ## [Unreleased] — 2026-03-02
 
+### ✨ Features & Improvements
+- **Guest Checkout:** Unauthenticated users can now proceed directly to checkout without being redirected to the login page (`summary.tsx`).
+- **Cash on Delivery (COD):** Relabeled the built-in `pp_system_default` manual payment provider to "Cash on Delivery (COD)" with a 💵 icon in `constants.tsx`.
+- **Admin Auto-Logout Extension:** Increased the Admin panel auto-logout timer from 1 day to 2 hours by adding `jwtExpiresIn: "2h"` to `medusa-config.ts`.
+
+### 🐛 Mobile & UI Fixes
+- **Mobile Account Overview:** Fixed an issue where the `Overview` dashboard (profile completion, saved addresses, recent orders) was hidden on mobile screens due to a `hidden small:block` wrapper.
+- **Account Navigation:** Refactored the mobile `AccountNav` to be a clean dropdown list across all subpages instead of awkwardly mimicking the dashboard homepage.
+- **Checkout Branding:** Replaced "Medusa Store" text with "Bisudhishop" in the checkout header, and changed the "Powered by Medusa & Next.js" logos in the footer to a simple "© Bisudhishop. All rights reserved." text.
+- **Messenger Button Match:** Added a matching blue border (`#0084FF`) and hover effect to the "Order via Messenger" button on product pages so it perfectly aligns with the WhatsApp button styling.
+
+
 ### 🎨 Design System
 - Updated brand color palette in `tailwind.config.js`: deep forest green `#2D6A4F`, warm cream, sage accent
 - Added reusable component utility classes to `globals.css` for buttons, cards, sections, and trust lines

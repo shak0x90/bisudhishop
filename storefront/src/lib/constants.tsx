@@ -31,8 +31,8 @@ export const paymentInfoMap: Record<
     icon: <PayPal />,
   },
   pp_system_default: {
-    title: "Manual Payment",
-    icon: <CreditCard />,
+    title: "Cash on Delivery (COD)",
+    icon: <span style={{ fontSize: "1.1rem" }}>💵</span>,
   },
   // Add more payment providers here
 }

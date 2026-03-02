@@ -13,8 +13,8 @@ type OverviewProps = {
 const Overview = ({ customer, orders }: OverviewProps) => {
   return (
     <div data-testid="overview-page-wrapper">
-      <div className="hidden small:block">
-        <div className="text-xl-semi flex justify-between items-center mb-4">
+      <div>
+        <div className="text-xl-semi flex flex-col small:flex-row small:justify-between small:items-center mb-4 gap-y-4">
           <span data-testid="welcome-message" data-value={customer?.first_name}>
             Hello {customer?.first_name}
           </span>
@@ -31,7 +31,7 @@ const Overview = ({ customer, orders }: OverviewProps) => {
         </div>
         <div className="flex flex-col py-8 border-t border-gray-200">
           <div className="flex flex-col gap-y-4 h-full col-span-1 row-span-2 flex-1">
-            <div className="flex items-start gap-x-16 mb-6">
+            <div className="flex flex-col small:flex-row items-start gap-x-16 gap-y-8 mb-6">
               <div className="flex flex-col gap-y-4">
                 <h3 className="text-large-semi">Profile</h3>
                 <div className="flex items-end gap-x-2">
@@ -85,24 +85,27 @@ const Overview = ({ customer, orders }: OverviewProps) => {
                           href={`/account/orders/details/${order.id}`}
                         >
                           <Container className="bg-gray-50 flex justify-between items-center p-4">
-                            <div className="grid grid-cols-3 grid-rows-2 text-small-regular gap-x-4 flex-1">
-                              <span className="font-semibold">Date placed</span>
-                              <span className="font-semibold">
+                            <div className="grid grid-cols-1 small:grid-cols-3 small:grid-rows-2 text-small-regular gap-x-4 gap-y-2 flex-1">
+                              <span className="font-semibold hidden small:block">Date placed</span>
+                              <span className="font-semibold hidden small:block">
                                 Order number
                               </span>
-                              <span className="font-semibold">
+                              <span className="font-semibold hidden small:block">
                                 Total amount
                               </span>
                               <span data-testid="order-created-date">
+                                <span className="font-semibold small:hidden mr-2">Date:</span>
                                 {new Date(order.created_at).toDateString()}
                               </span>
                               <span
                                 data-testid="order-id"
                                 data-value={order.display_id}
                               >
+                                <span className="font-semibold small:hidden mr-2">Order:</span>
                                 #{order.display_id}
                               </span>
                               <span data-testid="order-amount">
+                                <span className="font-semibold small:hidden mr-2">Total:</span>
                                 {convertToLocale({
                                   amount: order.total,
                                   currency_code: order.currency_code,
