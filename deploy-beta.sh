@@ -23,7 +23,24 @@ apt-get update && apt-get upgrade -y
 apt-get install -y curl git build-essential nginx acl
 
 echo ""
-echo "🟢 2. Installing Node.js 20 & PM2"
+echo "� 1.5 Setup Swap Space (Prevents OOM during build)"
+if [ -f /swapfile ]; then
+    echo "Swapfile already exists. Skipping."
+else
+    echo "Creating 4GB swapfile..."
+    fallocate -l 4G /swapfile
+    chmod 600 /swapfile
+    mkswap /swapfile
+    swapon /swapfile
+    # Make it permanent
+    echo '/swapfile none swap sw 0 0' | tee -a /etc/fstab
+    # Tweak swappiness for better performance on SSD/NVMe
+    sysctl vm.swappiness=10
+    echo 'vm.swappiness=10' | tee -a /etc/sysctl.conf
+fi
+
+echo ""
+echo "�🟢 2. Installing Node.js 20 & PM2"
 curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
 apt-get install -y nodejs
 npm install -g npm@latest pm2 yarn
