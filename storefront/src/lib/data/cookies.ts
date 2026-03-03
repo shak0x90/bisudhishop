@@ -4,33 +4,25 @@ import { cookies as nextCookies } from "next/headers"
 export const getAuthHeaders = async (): Promise<
   { authorization: string } | {}
 > => {
-  try {
-    const cookies = await nextCookies()
-    const token = cookies.get("_medusa_jwt")?.value
+  const cookies = await nextCookies()
+  const token = cookies.get("_medusa_jwt")?.value
 
-    if (!token) {
-      return {}
-    }
-
-    return { authorization: `Bearer ${token}` }
-  } catch {
+  if (!token) {
     return {}
   }
+
+  return { authorization: `Bearer ${token}` }
 }
 
 export const getCacheTag = async (tag: string): Promise<string> => {
-  try {
-    const cookies = await nextCookies()
-    const cacheId = cookies.get("_medusa_cache_id")?.value
+  const cookies = await nextCookies()
+  const cacheId = cookies.get("_medusa_cache_id")?.value
 
-    if (!cacheId) {
-      return ""
-    }
-
-    return `${tag}-${cacheId}`
-  } catch (error) {
+  if (!cacheId) {
     return ""
   }
+
+  return `${tag}-${cacheId}`
 }
 
 export const getCacheOptions = async (
