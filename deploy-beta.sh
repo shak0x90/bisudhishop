@@ -117,7 +117,15 @@ npm run build
 
 
 echo ""
-echo "🛒 8. Installing & Building Storefront (Next.js)"
+echo "� 8. Starting Backend Services with PM2"
+cd $APP_DIR
+pm2 start npm --name "medusa-backend" -- run start
+echo "Waiting for backend to start (10s)..."
+sleep 10
+
+
+echo ""
+echo "�🛒 9. Installing & Building Storefront (Next.js)"
 cd $APP_DIR/storefront
 npm install
 echo "Building Next.js Storefront..."
@@ -125,9 +133,7 @@ npm run build
 
 
 echo ""
-echo "🚀 9. Starting Services with PM2"
-cd $APP_DIR
-pm2 start npm --name "medusa-backend" -- run start
+echo "🚀 10. Starting Storefront Server with PM2"
 cd $APP_DIR/storefront
 pm2 start npm --name "medusa-storefront" -- run start
 pm2 save
