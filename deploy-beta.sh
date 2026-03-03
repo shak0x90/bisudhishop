@@ -102,6 +102,16 @@ cd $APP_DIR
 npm install
 echo "Running Medusa Database Migrations..."
 npx medusa db:migrate
+echo "Seeding Medusa Database (Sales Channel & API Key)..."
+npm run seed || true
+
+echo "Fetching Publishable API Key from Database..."
+PUB_KEY=$(sudo -u postgres psql -d $DB_NAME -t -c "SELECT token FROM api_key WHERE type='publishable' LIMIT 1;" | xargs)
+echo "Found Publishable Key: $PUB_KEY"
+
+# Append key to Storefront .env.local
+echo "NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=$PUB_KEY" >> $APP_DIR/storefront/.env.local
+
 echo "Building Medusa Admin..."
 npm run build
 
