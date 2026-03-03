@@ -4,25 +4,39 @@ import { cookies as nextCookies } from "next/headers"
 export const getAuthHeaders = async (): Promise<
   { authorization: string } | {}
 > => {
-  const cookies = await nextCookies()
-  const token = cookies.get("_medusa_jwt")?.value
+  try {
+    const cookies = await nextCookies()
+    const token = cookies.get("_medusa_jwt")?.value
 
-  if (!token) {
+    if (!token) {
+      return {}
+    }
+
+    return { authorization: `Bearer ${token}` }
+  } catch (error: any) {
+    if (error?.digest === "DYNAMIC_SERVER_USAGE" || error?.message?.includes("DYNAMIC_SERVER_USAGE")) {
+      throw error;
+    }
     return {}
   }
-
-  return { authorization: `Bearer ${token}` }
 }
 
 export const getCacheTag = async (tag: string): Promise<string> => {
-  const cookies = await nextCookies()
-  const cacheId = cookies.get("_medusa_cache_id")?.value
+  try {
+    const cookies = await nextCookies()
+    const cacheId = cookies.get("_medusa_cache_id")?.value
 
-  if (!cacheId) {
+    if (!cacheId) {
+      return ""
+    }
+
+    return `${tag}-${cacheId}`
+  } catch (error: any) {
+    if (error?.digest === "DYNAMIC_SERVER_USAGE" || error?.message?.includes("DYNAMIC_SERVER_USAGE")) {
+      throw error;
+    }
     return ""
   }
-
-  return `${tag}-${cacheId}`
 }
 
 export const getCacheOptions = async (
