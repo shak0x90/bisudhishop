@@ -8,15 +8,7 @@ export default async function createAdmin({ container }: any) {
     const email = "admin@bishudhi.com"
     const password = "supersecret123"
 
-    // Create the admin user record
-    const user = await userModuleService.createUsers({
-        email,
-        first_name: "Admin",
-        last_name: "Bishudhi",
-    })
-    logger.info(`Created user: ${user.id}`)
-
-    // Register auth identity
+    // Step 1: Create auth identity with email/password FIRST
     const { success, authIdentity, error } =
         await authModuleService.authenticate("emailpass", {
             authScope: "admin",
@@ -27,15 +19,25 @@ export default async function createAdmin({ container }: any) {
             action: "register",
         } as any)
 
-    if (!success) {
-        // Identity may already exist — just update password
-        logger.warn(`Auth registration result: ${error}`)
-    } else {
-        // Link auth identity to user
-        await authModuleService.updateAuthIdentities({
-            id: authIdentity!.id,
-            app_metadata: { user_id: user.id },
-        })
-        logger.info("✅ Admin user created and linked successfully!")
+    if (!success || !authIdentity) {
+        throw new Error(`Failed to create auth identity: ${error}`)
     }
+    logger.info(`Created auth identity: ${authIdentity.id}`)
+
+    // Step 2: Create the admin user record
+    const [user] = await userModuleService.createUsers([{
+        email,
+        first_name: "Admin",
+        last_name: "Bishudhi",
+    }])
+    logger.info(`Created user: ${user.id}`)
+
+    // Step 3: Link auth identity to user
+    await authModuleService.updateAuthIdentities({
+        id: authIdentity.id,
+        app_metadata: { user_id: user.id },
+    })
+    logger.info("✅ Admin user created and linked successfully!")
+    logger.info(`Email: ${email}`)
+    logger.info(`Password: ${password}`)
 }
