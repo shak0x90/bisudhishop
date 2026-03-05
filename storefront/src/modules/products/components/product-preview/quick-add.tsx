@@ -10,26 +10,61 @@ type QuickAddProps = {
     productHandle: string
     productId: string
     variant?: "overlay" | "inline"
+    inventoryQuantity?: number | null
+    manageInventory?: boolean
+    allowBackorder?: boolean
 }
 
-export default function QuickAddToCart({ variantId, productHandle, productId, variant = "overlay" }: QuickAddProps) {
+export default function QuickAddToCart({
+    variantId,
+    productHandle,
+    productId,
+    variant = "overlay",
+    inventoryQuantity,
+    manageInventory = false,
+    allowBackorder = false,
+}: QuickAddProps) {
     const [isAdding, setIsAdding] = useState(false)
     const [added, setAdded] = useState(false)
+    const [error, setError] = useState<string | null>(null)
     const countryCode = useParams().countryCode as string
     const { isInWishlist, toggleWishlist } = useWishlist()
     const wishlisted = isInWishlist(productId)
 
+    // Stock logic
+    const outOfStock =
+        manageInventory &&
+        !allowBackorder &&
+        inventoryQuantity !== null &&
+        inventoryQuantity !== undefined &&
+        inventoryQuantity <= 0
+
+    const lowStock =
+        manageInventory &&
+        !allowBackorder &&
+        inventoryQuantity !== null &&
+        inventoryQuantity !== undefined &&
+        inventoryQuantity > 0 &&
+        inventoryQuantity <= 5
+
     const handleAddToCart = async (e: React.MouseEvent) => {
         e.preventDefault()
         e.stopPropagation()
-        if (!variantId || isAdding) return
+        if (!variantId || isAdding || outOfStock) return
         setIsAdding(true)
+        setError(null)
         try {
             await addToCart({ variantId, quantity: 1, countryCode })
             setAdded(true)
             setTimeout(() => setAdded(false), 2000)
-        } catch (err) {
-            console.error("Failed to add to cart", err)
+        } catch (err: any) {
+            const msg: string = err?.message ?? ""
+            if (msg.toLowerCase().includes("stock") || msg.toLowerCase().includes("inventory") || msg.toLowerCase().includes("quantity")) {
+                setError("Not enough stock available")
+            } else {
+                setError("Could not add to cart")
+            }
+            setTimeout(() => setError(null), 3000)
         } finally {
             setIsAdding(false)
         }
@@ -41,7 +76,15 @@ export default function QuickAddToCart({ variantId, productHandle, productId, va
         toggleWishlist(productId)
     }
 
-    const cartLabel = isAdding ? "Adding…" : added ? "Added ✓" : "Add to Cart"
+    const cartLabel = outOfStock
+        ? "Out of Stock"
+        : error
+            ? error
+            : isAdding
+                ? "Adding…"
+                : added
+                    ? "Added ✓"
+                    : "Add to Cart"
 
     // ── OVERLAY: desktop hover-reveal slide-up bar ──
     if (variant === "overlay") {
@@ -51,8 +94,8 @@ export default function QuickAddToCart({ variantId, productHandle, productId, va
                 <button
                     onClick={handleWishlist}
                     className={`absolute top-2 left-2 z-20 w-8 h-8 rounded-full flex items-center justify-center transition-all shadow-sm ${wishlisted
-                            ? "bg-red-50 text-red-500"
-                            : "bg-white/80 text-gray-400 opacity-0 group-hover:opacity-100 hover:text-red-500 hover:bg-red-50"
+                        ? "bg-red-50 text-red-500"
+                        : "bg-white/80 text-gray-400 opacity-0 group-hover:opacity-100 hover:text-red-500 hover:bg-red-50"
                         }`}
                     title={wishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
                 >
@@ -65,8 +108,16 @@ export default function QuickAddToCart({ variantId, productHandle, productId, va
                 <div className="absolute bottom-0 left-0 w-full translate-y-full group-hover:translate-y-0 transition-transform duration-300 opacity-0 group-hover:opacity-100 z-10 flex">
                     <button
                         onClick={handleAddToCart}
-                        disabled={isAdding}
-                        className={`flex-1 flex items-center justify-center gap-2 py-3 text-white text-sm font-bold uppercase tracking-wider transition-colors ${added ? "bg-emerald-600" : isAdding ? "bg-brand-green/80 cursor-wait" : "bg-brand-green hover:bg-brand-green-dark"
+                        disabled={isAdding || outOfStock}
+                        className={`flex-1 flex items-center justify-center gap-2 py-3 text-white text-sm font-bold uppercase tracking-wider transition-colors ${outOfStock
+                                ? "bg-gray-400 cursor-not-allowed"
+                                : error
+                                    ? "bg-red-500"
+                                    : added
+                                        ? "bg-emerald-600"
+                                        : isAdding
+                                            ? "bg-brand-green/80 cursor-wait"
+                                            : "bg-brand-green hover:bg-brand-green-dark"
                             }`}
                     >
                         {isAdding && (
@@ -92,21 +143,46 @@ export default function QuickAddToCart({ variantId, productHandle, productId, va
     }
 
     // ── INLINE: always-visible Add to Cart button (mobile only) ──
-    // Wishlist ♡ is handled by the separate WishlistButton component in product-preview
     return (
-        <button
-            onClick={handleAddToCart}
-            disabled={isAdding}
-            className={`w-full mt-2 flex items-center justify-center gap-1.5 py-2 rounded-lg text-white text-xs font-bold uppercase tracking-wider transition-colors ${added ? "bg-emerald-600" : isAdding ? "bg-brand-green/80 cursor-wait" : "bg-brand-green active:bg-brand-green-dark"
-                }`}
-        >
-            {isAdding && (
-                <svg className="animate-spin w-3.5 h-3.5" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
+        <div className="w-full mt-2 flex flex-col gap-1">
+            {/* Stock badge */}
+            {outOfStock && (
+                <span className="text-center text-[11px] font-semibold text-red-500 bg-red-50 rounded-md py-0.5 px-2">
+                    Out of Stock
+                </span>
             )}
-            {cartLabel}
-        </button>
+            {lowStock && !outOfStock && (
+                <span className="text-center text-[11px] font-semibold text-amber-600 bg-amber-50 rounded-md py-0.5 px-2">
+                    Only {inventoryQuantity} left!
+                </span>
+            )}
+            {error && (
+                <span className="text-center text-[11px] font-semibold text-red-500 bg-red-50 rounded-md py-0.5 px-2">
+                    {error}
+                </span>
+            )}
+            <button
+                onClick={handleAddToCart}
+                disabled={isAdding || outOfStock}
+                className={`w-full flex items-center justify-center gap-1.5 py-2 rounded-lg text-white text-xs font-bold uppercase tracking-wider transition-colors ${outOfStock
+                        ? "bg-gray-300 cursor-not-allowed text-gray-500"
+                        : error
+                            ? "bg-red-500"
+                            : added
+                                ? "bg-emerald-600"
+                                : isAdding
+                                    ? "bg-brand-green/80 cursor-wait"
+                                    : "bg-brand-green active:bg-brand-green-dark"
+                    }`}
+            >
+                {isAdding && (
+                    <svg className="animate-spin w-3.5 h-3.5" viewBox="0 0 24 24" fill="none">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                )}
+                {cartLabel}
+            </button>
+        </div>
     )
 }

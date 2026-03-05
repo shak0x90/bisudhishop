@@ -40,9 +40,9 @@ export default async function FreshThisWeek({
             </div>
 
             {/* Product Grid — max 8 products, curated feel */}
-            <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
+            <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 items-stretch">
                 {products.map((product) => (
-                    <li key={product.id}>
+                    <li key={product.id} className="h-full">
                         <ProductPreview product={product} region={region} isFeatured />
                     </li>
                 ))}

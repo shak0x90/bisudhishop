@@ -41,6 +41,7 @@ export default function ProductActions({
 
   const [options, setOptions] = useState<Record<string, string | undefined>>({})
   const [isAdding, setIsAdding] = useState(false)
+  const [cartError, setCartError] = useState<string | null>(null)
   const [quantity, setQuantity] = useState(1)
   const countryCode = useParams().countryCode as string
 
@@ -120,6 +121,16 @@ export default function ProductActions({
     return false
   }, [selectedVariant])
 
+  // Low-stock threshold
+  const stockQty = selectedVariant?.inventory_quantity ?? null
+  const lowStock =
+    selectedVariant?.manage_inventory &&
+    !selectedVariant?.allow_backorder &&
+    stockQty !== null &&
+    stockQty > 0 &&
+    stockQty <= 5
+  const maxQty = selectedVariant?.manage_inventory && stockQty !== null ? stockQty : 999
+
   const actionsRef = useRef<HTMLDivElement>(null)
 
   const inView = useIntersection(actionsRef, "0px")
@@ -127,16 +138,25 @@ export default function ProductActions({
   // add the selected variant to the cart
   const handleAddToCart = async () => {
     if (!selectedVariant?.id) return null
-
     setIsAdding(true)
-
-    await addToCart({
-      variantId: selectedVariant.id,
-      quantity,
-      countryCode,
-    })
-
-    setIsAdding(false)
+    setCartError(null)
+    try {
+      await addToCart({
+        variantId: selectedVariant.id,
+        quantity,
+        countryCode,
+      })
+    } catch (err: any) {
+      const msg: string = err?.message ?? ""
+      if (msg.toLowerCase().includes("stock") || msg.toLowerCase().includes("inventory") || msg.toLowerCase().includes("quantity")) {
+        setCartError(`Only ${stockQty ?? "limited"} item(s) available. Please reduce your quantity.`)
+      } else {
+        setCartError("Something went wrong. Please try again.")
+      }
+      setTimeout(() => setCartError(null), 4000)
+    } finally {
+      setIsAdding(false)
+    }
   }
 
   // Handle direct WhatsApp ordering
@@ -176,6 +196,23 @@ export default function ProductActions({
 
         <ProductPrice product={product} variant={selectedVariant} />
 
+        {/* Stock alert banner */}
+        {selectedVariant && !inStock && (
+          <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-600 rounded-lg px-3 py-2 text-sm font-semibold">
+            <span>🚫</span> Out of Stock — check back soon!
+          </div>
+        )}
+        {selectedVariant && inStock && lowStock && (
+          <div className="flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 rounded-lg px-3 py-2 text-sm font-semibold">
+            <span>⚠️</span> Only {stockQty} left — order soon!
+          </div>
+        )}
+        {cartError && (
+          <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-600 rounded-lg px-3 py-2 text-sm">
+            <span>❌</span> {cartError}
+          </div>
+        )}
+
         {/* Quantity Selector */}
         <div className="flex items-center gap-3">
           <span className="text-sm font-semibold text-gray-700">{t("product.quantity")}:</span>
@@ -191,8 +228,8 @@ export default function ProductActions({
               {quantity}
             </span>
             <button
-              onClick={() => setQuantity(quantity + 1)}
-              disabled={isAdding}
+              onClick={() => setQuantity(Math.min(maxQty, quantity + 1))}
+              disabled={isAdding || quantity >= maxQty}
               className="w-11 h-11 flex items-center justify-center text-gray-600 hover:bg-gray-100 active:bg-gray-200 disabled:opacity-30 transition-colors text-xl font-medium"
             >
               +

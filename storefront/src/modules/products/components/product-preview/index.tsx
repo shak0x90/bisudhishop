@@ -23,8 +23,16 @@ export default function ProductPreview({
   const isSale = cheapestPrice?.price_type === "sale"
 
   // Get the first variant ID for quick add-to-cart
-  const firstVariantId = product.variants?.[0]?.id
+  const firstVariant = product.variants?.[0]
+  const firstVariantId = firstVariant?.id
   const hasMultipleVariants = (product.variants?.length ?? 0) > 1
+
+  // Stock status from first variant
+  const manageInventory = firstVariant?.manage_inventory ?? false
+  const allowBackorder = firstVariant?.allow_backorder ?? false
+  const inventoryQty = firstVariant?.inventory_quantity ?? null
+  const outOfStock = manageInventory && !allowBackorder && inventoryQty !== null && inventoryQty <= 0
+  const lowStock = manageInventory && !allowBackorder && inventoryQty !== null && inventoryQty > 0 && inventoryQty <= 5
 
   // Trust line: use category name or fallback
   const categoryName = product.categories?.[0]?.name?.toLowerCase() ?? ""
@@ -43,7 +51,7 @@ export default function ProductPreview({
   const badge = isSale ? "SALE" : null
 
   return (
-    <div className="group relative bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 font-nunito flex flex-col items-center p-3 sm:p-4 overflow-hidden">
+    <div className="group relative bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 font-nunito flex flex-col items-center p-3 sm:p-4 overflow-hidden h-full">
       {/* Badges */}
       {isSale && (
         <div className="absolute top-3 right-3 bg-brand-red text-white text-[10px] font-bold uppercase rounded-full w-10 h-10 flex items-center justify-center z-20 shadow-sm">
@@ -61,10 +69,30 @@ export default function ProductPreview({
             />
           </LocalizedClientLink>
 
+          {/* Stock badge on image */}
+          {outOfStock && (
+            <div className="absolute top-2 left-2 z-20 bg-red-500 text-white text-[10px] font-bold uppercase rounded-full px-2 py-0.5 shadow-sm">
+              Out of Stock
+            </div>
+          )}
+          {lowStock && !outOfStock && (
+            <div className="absolute top-2 left-2 z-20 bg-amber-400 text-white text-[10px] font-bold rounded-full px-2 py-0.5 shadow-sm">
+              Only {inventoryQty} left!
+            </div>
+          )}
+
           {/* Desktop overlay (hover-triggered) — hidden on mobile */}
           <div className="hidden md:block">
             {firstVariantId && !hasMultipleVariants ? (
-              <QuickAddToCart variant="overlay" variantId={firstVariantId} productHandle={product.handle!} productId={product.id} />
+              <QuickAddToCart
+                variant="overlay"
+                variantId={firstVariantId}
+                productHandle={product.handle!}
+                productId={product.id}
+                inventoryQuantity={inventoryQty}
+                manageInventory={manageInventory}
+                allowBackorder={allowBackorder}
+              />
             ) : (
               <LocalizedClientLink
                 href={`/products/${product.handle}`}
@@ -85,7 +113,7 @@ export default function ProductPreview({
       </div>
 
       {/* Product info */}
-      <div className="flex flex-col items-center w-full mt-2 z-20 bg-white gap-0.5">
+      <div className="flex flex-col items-center w-full mt-2 z-20 bg-white gap-0.5 flex-1 justify-between">
         <LocalizedClientLink href={`/products/${product.handle}`} className="text-center w-full">
           <h3 className="text-brand-dark font-semibold text-sm leading-tight line-clamp-2 hover:text-brand-green transition-colors" data-testid="product-title">
             {product.title}
@@ -97,7 +125,15 @@ export default function ProductPreview({
         {/* Mobile CTA — always visible, hidden on md+ where hover overlay takes over */}
         <div className="w-full md:hidden">
           {firstVariantId && !hasMultipleVariants ? (
-            <QuickAddToCart variant="inline" variantId={firstVariantId} productHandle={product.handle!} productId={product.id} />
+            <QuickAddToCart
+              variant="inline"
+              variantId={firstVariantId}
+              productHandle={product.handle!}
+              productId={product.id}
+              inventoryQuantity={inventoryQty}
+              manageInventory={manageInventory}
+              allowBackorder={allowBackorder}
+            />
           ) : (
             <LocalizedClientLink
               href={`/products/${product.handle}`}
